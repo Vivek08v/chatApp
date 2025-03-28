@@ -60,17 +60,70 @@ export const signup = async(req, res) => {
     }
     catch(error){
         console.log("Error in signup controller", error.message);
-        return res.status(400).json({
+        return res.status(500).json({
             success: false,
-            message: "Password mus be at least 6 characters"
+            message: "Something went wrong while signup"
         })
     }
 }
 
-export const login = (req, res) => {
-    res.send("login route")
+export const login = async(req, res) => {
+    try{
+        const {email, password} = req.body;
+        if(!email || !password){
+            res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            })
+        }
+
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Credentials"  // user donot exists
+            })
+        }
+
+        const isPassCorrect = await bcrypt.compare(password, user.password);
+        if(!isPassCorrect){
+            // console.log("hi");
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Credentials" // Incorrect password
+            })
+        }
+
+        generateToken(user._id, res);
+        
+        return res.status(200).json({
+            success: true,
+            data: user,
+            message: "loggedIn successfully"
+        })
+    }
+    catch(error){
+        console.log("Error in login controller", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "something went wrong while login"
+        })
+    }
 }
 
 export const logout = (req, res) => {
-    res.send("logout route")
+    try{
+        res.cookie("jwt", "", {maxAge: 0})
+        res.status(200).json({
+            success: true,
+            message: "Logged Out Successfully"
+        })
+    }
+    catch(error){
+        console.log("Error in logout controller", error.message);
+        res.status(500).json({
+            success: false,
+            message: "something went wrong while logout"
+        })
+    }
 }
