@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 
 export const protectRoute = async(req, res, next) => {
     try{
@@ -7,7 +7,7 @@ export const protectRoute = async(req, res, next) => {
 
         if(!token){
             return res.status(400).json({
-                success: "false",
+                success: false,
                 message: "Unauthorized - No Token Provided"
             })
         }
@@ -16,16 +16,16 @@ export const protectRoute = async(req, res, next) => {
 
         if(!decoded){
             return res.status(400).json({
-                success: "false",
+                success: false,
                 message: "Unauthorized - Incorrect Token"
             })
         }
-
+        console.log("hi");
         const user = await User.findById(decoded.userId).select("-password");
 
         if(!user){
             return res.status(400).json({
-                success: "false",
+                success: false,
                 message: "Unauthorized - No Token Provided"
             })
         }
@@ -37,7 +37,7 @@ export const protectRoute = async(req, res, next) => {
     catch(error){
         console.log("Error in protect route", error)
         return res.status(400).json({
-            success: "true",
+            success: false,
             message: "Something went wrong in protect route"
         })
     }

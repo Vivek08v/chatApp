@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs"
@@ -71,7 +72,7 @@ export const login = async(req, res) => {
     try{
         const {email, password} = req.body;
         if(!email || !password){
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             })
@@ -114,16 +115,50 @@ export const login = async(req, res) => {
 export const logout = (req, res) => {
     try{
         res.cookie("jwt", "", {maxAge: 0})
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Logged Out Successfully"
         })
     }
     catch(error){
         console.log("Error in logout controller", error.message);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "something went wrong while logout"
+        })
+    }
+}
+
+export const updateProfile = async(req, res) => {
+    try{
+        const {profilePic} = req.body;
+        const userId = req.user._id;
+
+        if(!profilePic){
+            return res.status(400).json({
+                success: false,
+                message: "Profile pic is required"
+            })
+        }
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {profilePic: uploadResponse.secure_url},
+            {new:true}
+        );
+
+        return res.status(200).json({
+            success: true,
+            data: updatedUser,
+            message: "profile updated Successfully"
+        })
+    }
+    catch(error){
+        console.log("error in update profile", error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while profile update"
         })
     }
 }
