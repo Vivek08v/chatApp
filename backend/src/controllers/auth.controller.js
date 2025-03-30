@@ -71,8 +71,9 @@ export const signup = async(req, res) => {
 export const login = async(req, res) => {
     try{
         const {email, password} = req.body;
+        // console.log(email, password)
         if(!email || !password){
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
                 message: "All fields are required"
             })
@@ -80,7 +81,7 @@ export const login = async(req, res) => {
 
         const user = await User.findOne({email});
         if(!user){
-            return res.status(400).json({
+            return res.status(402).json({
                 success: false,
                 message: "Invalid Credentials"  // user donot exists
             })
@@ -89,7 +90,7 @@ export const login = async(req, res) => {
         const isPassCorrect = await bcrypt.compare(password, user.password);
         if(!isPassCorrect){
             // console.log("hi");
-            return res.status(400).json({
+            return res.status(403).json({
                 success: false,
                 message: "Invalid Credentials" // Incorrect password
             })
@@ -159,6 +160,25 @@ export const updateProfile = async(req, res) => {
         return res.status(500).json({
             success: false,
             message: "Something went wrong while profile update"
+        })
+    }
+}
+
+export const checkAuth = (req, res) => {
+    try{
+        console.log("hi");
+        
+        res.status(200).json({
+            success: true,
+            data: req.user,
+            message: "Auth checked successfully",
+        })
+    }
+    catch(error){
+        console.log("Error in auth check", error);
+        return res.status(500).json({
+            success: false,
+            message: "something went wrong while auth check",
         })
     }
 }
