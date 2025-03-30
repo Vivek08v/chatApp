@@ -20,5 +20,6 @@ export const useAuthStore = create((set) => ({
         finally {
             set({isCheckingAuth: false})
         }
-    }
+    },
+    
 }))

@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuthStore } from './store/useAuthStore'
 import { Loader } from 'lucide-react'
+import { Toaster } from 'react-hot-toast'
 function App() {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
 
@@ -27,8 +28,7 @@ function App() {
     )
   }
   return (
-    <>
-      <div className='text-amber-200'>
+      <div>
 
         <Navbar />
 
@@ -39,8 +39,10 @@ function App() {
           <Route path="/setting" element={<SettingsPage/>} />
           <Route path="/profile" element={authUser ? <ProfilePage/> : <Navigate to="/login" />} />
         </Routes>
+
+
+        <Toaster />
       </div>
-    </>
   )
 }
 
