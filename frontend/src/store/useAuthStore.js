@@ -33,6 +33,7 @@ export const useAuthStore = create((set) => ({
             toast.success("Account created successfully");
         }
         catch(error){
+            console.log("Error in signup API:", error)
             toast.error("Error in signup API:", error.response.data.data.message)
         }
         finally{
@@ -49,7 +50,8 @@ export const useAuthStore = create((set) => ({
             toast.success("User LoggedIn successfully");
         }
         catch(error){
-            toast.error("Error in login API:", error.response.data.data)
+            console.log("Error in login API:", error.response.data.message)
+            toast.error("Error in login API:", error.response.data.message)
         }
         finally{
             set({ isLoggingIn: false});
@@ -64,7 +66,24 @@ export const useAuthStore = create((set) => ({
             toast.success("Logged out successfully")
         }
         catch(error){
-            console.log("Error in login API:",error.response.data.data.message);
+            console.log("Error in logout API:", error)
+            console.log("Error in logout API:",error.response.data.data.message);
+        }
+    },
+
+    updateProfile: async (data) => {
+        set({isUpdatingProfile: true});
+        try{
+            const res = await axiosInstance.put("/auth/update-profile", data);
+            set({authUser: res.data.data})
+            toast.success("Profile updated successfully");
+        }
+        catch(error){
+            console.log("Error in update API:", error);
+            toast.error("Error in update API:", error.response.data.data);
+        }
+        finally{
+            set({isUpdatingProfile: false});
         }
     }
 }))
