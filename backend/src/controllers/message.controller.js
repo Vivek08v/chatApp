@@ -1,5 +1,7 @@
+import cloudinary from "../lib/cloudinary.js";
+
 import { User } from "../models/user.model.js";
-import { Message } from "../models/message.model.js";
+import { Message } from "../models/message.model.js"
 
 export const getUsersForSidebar = async(req, res) => {
     try{
@@ -50,6 +52,7 @@ export const getMessages = async(req, res) => {
 
 export const sendMessage = async(req, res) => {
     try{
+        console.log("hii");
         const { text, image} = req.body;
         const { id: receiverId } = req.params;  // id is renamed as receiverId
         const senderId = req.user._id;

@@ -166,7 +166,7 @@ export const updateProfile = async(req, res) => {
 
 export const checkAuth = (req, res) => {
     try{
-        console.log("hi");
+        // console.log("hi");
         
         res.status(200).json({
             success: true,

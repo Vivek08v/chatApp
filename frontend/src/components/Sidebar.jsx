@@ -10,7 +10,7 @@ const Sidebar = () => {
   const {onlineUsers} = useAuthStore();
 
   const filteredUsers = users;
-  console.log(typeof(users))
+//   console.log(typeof(users))
 
   useEffect(()=>{
     getUsers()
