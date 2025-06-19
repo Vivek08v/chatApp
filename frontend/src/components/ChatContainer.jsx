@@ -8,13 +8,17 @@ import { useAuthStore } from '../store/useAuthStore';
 import { formatMessageTime } from '../lib/utils';
 
 const ChatContainer = () => {
-    const {messages, getMessages, isMessageLoading, selectedUser} = useChatStore();
+    const {messages, getMessages, isMessageLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
     const {authUser} = useAuthStore();
     console.log(messages);
 
     useEffect(() => {
         getMessages(selectedUser._id);
-    }, [selectedUser._id, getMessages])  // jab new message aayega ya receiver badlenge sidebar pe click kar ke, tab rerender hoga
+        subscribeToMessages();
+
+        return () => unsubscribeFromMessages
+    }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages])
+    // jab new message aayega ya receiver badlenge sidebar pe click kar ke, tab rerender hoga
 
     if(isMessageLoading){
         return (
